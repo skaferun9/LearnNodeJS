@@ -5,9 +5,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/main.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-    <title>My cart</title>
+    <title>
+        Checkout
+    </title>
 </head>
 
 <body>
@@ -65,46 +68,47 @@
 
         </div>
     </nav>
-
     <div class="container">
-        <% if (props.length> 0 ) { %>
-            <% for (let product of props ) { %>
-                <div>
-                    <div>
-                        <img src="<%= product.productId.imgUrl %>">
-                        <h1>
-                            <%= product.productId.title %>
-                        </h1>
-                        <h2>
-                            <%= product.productId.price %>
-                        </h2>
-                        <h2>
-                            <%= product.productId.description %>
-                        </h2>
-                        <h2>
-                            quantity: <%= product.quantity %>
-                        </h2>
-                        <form action="/delete-cart/<%= product.productId._id %>" method="POST">
-                            <input type='hidden' name='_csrf' value="<%= csrfToken %>">
-                            <button type="submit">Delete</button>
-                            
-                        </form>
+        <% for (let product of products ) { %>
+            <div class="card mt-3 shadow-sm p-3 mb-5 bg-white rounded">
+                <div class="card-body">
+                    <div class="card-title flex">
+                        <h4>Product Name : <%= product.productId.title %>
+                        </h4>
+                        <h4>Price : <%= product.productId.price %>
+                        </h4>
+                        <h4>Quantity : <%= product.quantity %>
+                        </h4>
+
                     </div>
                 </div>
 
-                <% } %>
-                    <!-- <form action="/create-order" method="POST">
-                        <input type='hidden' name='_csrf' value="<%= csrfToken %>">
-                        <button type="submit">Order</button>
-                    </form> -->
-                    <a href="/checkout" class="btn btn-danger">Oreder Now!</a>
+            </div>
+            <% } %>
 
+                <div class="checkout-method">
+                    <button class="btn btn-outline-success" id="order-btn">Order</button>
+                    <script src="https://js.stripe.com/v3/"></script>
+                    <script>
+                        var stripe = Stripe("pk_test_51JqwbGLCJUWyJZRiAiey6v1aR907dXzEee58P7W4vjWubjJ4VEVegw9lp6GKTW0Gg0pDFWusGaOIKxDkp6oAqUUE00I244UIgm")
+                        var orderBtn = document.getElementById('order-btn');
+                    
+                        orderBtn.addEventListener('click', function () {
+                            stripe.redirectToCheckout({
+                                sessionId: '<%= sessionId.id %>'
+                            })
+                        })
+                    </script>
 
+                </div>
 
-                    <% } else { %>
-                        <div>No Item!!!</div>
-                        <% } %>
     </div>
+
+
+
+
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
         crossorigin="anonymous"></script>
@@ -114,9 +118,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js"
         integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/"
         crossorigin="anonymous"></script>
-
-
-
 
 </body>
 

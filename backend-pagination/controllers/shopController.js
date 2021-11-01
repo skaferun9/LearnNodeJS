@@ -3,6 +3,7 @@ const path = require('path')
 const Product = require('../models/product')
 const Order = require('../models/order')
 const itemPerPage = 3
+const stripe = require("stripe")('sk_test_51JqwbGLCJUWyJZRiUgFWDGf4ITiDhSb6OcfMityigyzGYoHjrO3manGbCO1K6t4NalT6CKSqAlnGzOjek70XgoS000xhMVKcJN')
 
 exports.getMainShop = (req, res, next) => {
     let page = req.query.page || 1
@@ -189,3 +190,72 @@ exports.getOrderInvoice = (req, res, next) => {
         .catch(err => console.log(err))
 
 }
+
+
+exports.getCheckout = (req, res, next) => {
+    let products
+    let total = 0;
+    req.user
+        .populate('cart.item.productId')
+        .then(user => {
+            products = user.cart.item;
+            let total = 0;
+            products.forEach(p => {
+                total += p.quantity * p.productId.price
+            })
+            return stripe.checkout.sessions.create({
+                payment_method_types: ['card'],
+                line_items: products.map(p => {
+                    return {
+                        name: p.productId.title,
+                        description: p.productId.description,
+                        amount: p.productId.price * 100,
+                        currency: 'usd',
+                        quantity: p.quantity
+                    }
+                }),
+                success_url: req.protocol + '://' + req.get('host') + '/checkout/success',
+                cancel_url: req.protocol + '://' + req.get('host') + '/checkout/cancel'
+            })
+
+
+
+        })
+        .then(session => {
+            console.log(session)
+            res.render('checkout', {
+                products: products,
+                totalSum: total,
+                sessionId: session
+            })
+        })
+        .catch(err => console.log(err))
+
+}
+
+
+exports.getCheckoutSuccess = (req, res, next) => {
+
+    req.user.populate('cart.item.productId')
+        .then(user => {
+            const order = new Order({
+                orderBy: {
+                    userId: user._id,
+                    email: user.email
+                },
+                item: user.cart.item
+            })
+            req.user.clearCart()
+            return order.save()
+        })
+        .then(result => {
+            res.redirect('/cart')
+        })
+        .catch(err => console.log(err))
+
+
+
+
+}
+
+
