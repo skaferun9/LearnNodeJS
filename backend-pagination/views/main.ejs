@@ -72,29 +72,33 @@
         <center>
             <h1 class="mt-5">this is main page</h1>
         </center>
-        <div class="d-flex  justify-content-around mb-3">
+        <div class="d-flex  justify-content-around mb-3 ">
             <% if (props.length> 0 ) { %>
                 <% for (let product of props ) { %>
 
                     <div>
-                        <div class="card" style="width: 18rem;">
-                            <img src="<%= product.imgUrl %>" class="card-img-top rounded" alt="<%= product.imgUrl %>"
-                                class="card-body">
-                            <h5 class="card-title">
-                                <%= product.title %>
-                            </h5>
-                            <p class="card-text">
-                                <%= product.description %>
-                            </p>
-                            <h2>
-                                <%= product.price %> Baht
-                            </h2>
-                            <form action='/cart/<%= product._id %>' method="POST">
-                                <input type='hidden' name='_csrf' value="<%= csrfToken %>">
-                                <button type="submit" class="btn btn-primary">Add to cart</button>
-                                <a href="/admin/update-product/<%= product._id %>">Edit</a>
-                                <a href="/product/<%= product._id %>">Detail</a>
-                            </form>
+                        <div class="card col-lg-3 col-sm-6" style="width: 18rem;">
+                            <img src="<%= product.imgUrl %>" class="card-img-top" alt="<%= product.imgUrl %>">
+                            <div class="card-body">
+
+                                <h5 class="card-title">
+                                    <%= product.title %>
+                                </h5>
+                                <p class="card-text">
+                                    <%= product.description %>
+                                </p>
+                                <h2>
+                                    <%= product.price %> Baht
+                                </h2>
+                                <form action='/cart/<%= product._id %>' method="POST">
+                                    <input type='hidden' name='_csrf' value="<%= csrfToken %>">
+                                    <button type="submit" class="btn btn-primary">Add to cart</button>
+                                    <a href="/admin/update-product/<%= product._id %>">Edit</a>
+                                    <a href="/product/<%= product._id %>">Detail</a>
+                                    <a href="/delete-product/<%= product._id %>">Delete</a>
+                                </form>
+                                
+                            </div>
                         </div>
                     </div>
 
@@ -107,12 +111,33 @@
                     <% } %>
 
         </div>
-        <center>
-        <section>
-            <button href="/?page=1" class="btn btn-outline-success">1</button>
-            <button href="/?page=2" class="btn btn-outline-success">2</button>
-        </section>
-        </center>
+    
+           
+            <section class="pagination d-flex justify-content-center">
+                <% if (currentPage !=1 && prevPage != 1) { %>
+                    <a href="/?page=1" class="btn btn-outline-success">1</a>
+                    <% } %>
+                    <% if (hasPrevPage && prevPage != currentPage) { %>
+                        <a href="/?page=<%= prevPage %>" class="btn btn-outline-success">
+                            <%= prevPage %>
+                        </a>
+                        <% } %>
+                        <a href="/?page=<%= currentPage %>" class="btn btn-outline-success">
+                            <%= currentPage %>
+                        </a>
+                        <% if (hasNextPage) { %>
+                            <a href="/?page=<%= nextPage %>" class="btn btn-outline-success">
+                                <%= nextPage %>
+                            </a>
+                            <% } %>
+
+                                <% if (lastPage !=currentPage && nextPage !=lastPage) { %>
+                                    <a href="/?page=<%= lastPage %>" class="btn btn-outline-success">
+                                        <%= lastPage %>
+                                    </a>
+                                    <% } %>
+
+            </section>
 
     </div>
 

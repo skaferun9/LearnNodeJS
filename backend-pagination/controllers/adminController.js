@@ -26,6 +26,8 @@ exports.postAddProduct = (req, res, next) => {
     const img = req.file
 
     const imgUrl = img.path
+    console.log(img)
+   
     const product = new Product({
         title: title,
         price: price,
@@ -33,6 +35,7 @@ exports.postAddProduct = (req, res, next) => {
         imgUrl: imgUrl,
         userId: req.user,
     })
+    
     product.save()
         .then((result) => {
             return console.log(result)

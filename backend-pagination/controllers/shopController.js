@@ -2,21 +2,43 @@ const fs = require('fs')
 const path = require('path')
 const Product = require('../models/product')
 const Order = require('../models/order')
+const itemPerPage = 3
 
 exports.getMainShop = (req, res, next) => {
-
-    console.log(req.session.user)
+    let page = req.query.page || 1
+    let totalItem
+    // if (!page) {
+    //     page = 1;
+    // }
+    page = parseInt(page)
     Product.find()
-        .then(product => {
-            res.render('main',
-                {
-                    props: product,
-                    pageTitle: 'Main',
-                    isLoggedIn: req.session.isLoggedIn,
-                    path: '/'
-                })
+        .countDocuments()
+        .then(numProducts => {
+            totalItem = numProducts
+            return Product.find()
+                .skip((page - 1) * itemPerPage)
+                .limit(itemPerPage)
         })
         .catch(err => console.log(err))
+        .then(products => {
+            res.render('main',
+                {
+                    props: products,
+                    pageTitle: 'Main',
+                    isLoggedIn: req.session.isLoggedIn,
+                    path: '/',
+                    totalProduct: totalItem,
+                    currentPage: page,
+                    hasNextPage: itemPerPage * page < totalItem,
+                    hasPrevPage: page > 1,
+                    nextPage: page + 1,
+                    prevPage: page - 1,
+                    lastPage: Math.ceil(totalItem / itemPerPage)
+                })
+
+        })
+        .catch(err => console.log(err))
+
 }
 
 exports.getProductById = (req, res, next) => {

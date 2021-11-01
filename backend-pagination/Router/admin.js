@@ -9,7 +9,6 @@ router.get("/add-product", isAuth, adminController.getAddProduct)
 router.post('/add-product',
     [
         body('title')
-            .isAlphanumeric()
             .isLength({ min: 3 })
         ,
         body('price').isFloat(),
@@ -23,7 +22,6 @@ router.get('/update-product/:productId', isAuth, adminController.getUpdateProduc
 router.post('/update-product/:productId',
     [
         body('updateTitle')
-            .isAlphanumeric()
             .isLength({ min: 3 })
         ,
         body('updatePrice').isFloat(),
