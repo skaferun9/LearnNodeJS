@@ -95,9 +95,14 @@
                                     <button type="submit" class="btn btn-primary">Add to cart</button>
                                     <a href="/admin/update-product/<%= product._id %>">Edit</a>
                                     <a href="/product/<%= product._id %>">Detail</a>
-                                    <a href="/delete-product/<%= product._id %>">Delete</a>
+
+
                                 </form>
-                                
+                                <input type="hidden" value="<=% product._id %>" name="productId"></input>
+                                <input type="hidden" value="<=% csrfToken %>" name="_csrf"></input>
+                                <button onclick="onDelete(this)" class="btn">
+                                    Delete
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -111,33 +116,33 @@
                     <% } %>
 
         </div>
-    
-           
-            <section class="pagination d-flex justify-content-center">
-                <% if (currentPage !=1 && prevPage != 1) { %>
-                    <a href="/?page=1" class="btn btn-outline-success">1</a>
-                    <% } %>
-                    <% if (hasPrevPage && prevPage != currentPage) { %>
+
+
+        <section class="pagination d-flex justify-content-center">
+            <% if (currentPage !=1 && prevPage !=1) { %>
+                <a href="/?page=1" class="btn btn-outline-success">1</a>
+                <% } %>
+                    <% if (hasPrevPage && prevPage !=currentPage) { %>
                         <a href="/?page=<%= prevPage %>" class="btn btn-outline-success">
                             <%= prevPage %>
                         </a>
                         <% } %>
-                        <a href="/?page=<%= currentPage %>" class="btn btn-outline-success">
-                            <%= currentPage %>
-                        </a>
-                        <% if (hasNextPage) { %>
-                            <a href="/?page=<%= nextPage %>" class="btn btn-outline-success">
-                                <%= nextPage %>
+                            <a href="/?page=<%= currentPage %>" class="btn btn-outline-success">
+                                <%= currentPage %>
                             </a>
-                            <% } %>
+                            <% if (hasNextPage) { %>
+                                <a href="/?page=<%= nextPage %>" class="btn btn-outline-success">
+                                    <%= nextPage %>
+                                </a>
+                                <% } %>
 
-                                <% if (lastPage !=currentPage && nextPage !=lastPage) { %>
-                                    <a href="/?page=<%= lastPage %>" class="btn btn-outline-success">
-                                        <%= lastPage %>
-                                    </a>
-                                    <% } %>
+                                    <% if (lastPage !=currentPage && nextPage !=lastPage) { %>
+                                        <a href="/?page=<%= lastPage %>" class="btn btn-outline-success">
+                                            <%= lastPage %>
+                                        </a>
+                                        <% } %>
 
-            </section>
+        </section>
 
     </div>
 
@@ -149,7 +154,7 @@
 
 
 
-
+            
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
                 crossorigin="anonymous"></script>
@@ -159,6 +164,7 @@
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js"
                 integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/"
                 crossorigin="anonymous"></script>
+
 </body>
 
 </html>
