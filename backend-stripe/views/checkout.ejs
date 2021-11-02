@@ -88,7 +88,17 @@
 
                 <div class="checkout-method">
                     <button class="btn btn-outline-success" id="order-btn">Order</button>
-    
+                    <script src="https://js.stripe.com/v3/"></script>
+                    <script>
+                        var stripe = Stripe("pk_test_51JqwbGLCJUWyJZRiAiey6v1aR907dXzEee58P7W4vjWubjJ4VEVegw9lp6GKTW0Gg0pDFWusGaOIKxDkp6oAqUUE00I244UIgm")
+                        var orderBtn = document.getElementById('order-btn');
+                    
+                        orderBtn.addEventListener('click', function () {
+                            stripe.redirectToCheckout({
+                                sessionId: '<%= sessionId.id %>'
+                            })
+                        })
+                    </script>
 
                 </div>
 

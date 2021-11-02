@@ -203,6 +203,22 @@ exports.getCheckout = (req, res, next) => {
             products.forEach(p => {
                 total += p.quantity * p.productId.price
             })
+            return stripe.checkout.sessions.create({
+                payment_method_types: ['card'],
+                line_items: products.map(p => {
+                    return {
+                        name: p.productId.title,
+                        description: p.productId.description,
+                        amount: p.productId.price * 100,
+                        currency: 'usd',
+                        quantity: p.quantity
+                    }
+                }),
+                success_url: req.protocol + '://' + req.get('host') + '/checkout/success',
+                cancel_url: req.protocol + '://' + req.get('host') + '/checkout/cancel'
+            })
+
+
 
         })
         .then(session => {
@@ -210,12 +226,29 @@ exports.getCheckout = (req, res, next) => {
             res.render('checkout', {
                 products: products,
                 totalSum: total,
-
+                sessionId: session
             })
         })
         .catch(err => console.log(err))
 }
 
-
+exports.getCheckoutSuccess = (req, res, next) => {
+    req.user.populate('cart.item.productId')
+        .then(user => {
+            const order = new Order({
+                orderBy: {
+                    userId: user._id,
+                    email: user.email
+                },
+                item: user.cart.item
+            })
+            req.user.clearCart()
+            return order.save()
+        })
+        .then(result => {
+            res.redirect('/cart')
+        })
+        .catch(err => console.log(err))
+}
 
 
