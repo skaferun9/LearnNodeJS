@@ -27,7 +27,7 @@ exports.postAddProduct = (req, res, next) => {
 
     const imgUrl = img.path
     console.log(img)
-   
+
     const product = new Product({
         title: title,
         price: price,
@@ -35,7 +35,7 @@ exports.postAddProduct = (req, res, next) => {
         imgUrl: imgUrl,
         userId: req.user,
     })
-    
+
     product.save()
         .then((result) => {
             return console.log(result)
@@ -115,13 +115,16 @@ exports.postDeleteProduct = (req, res, next) => {
             }
             fileHalper.deleteFile(product.imgUrl)
             return Product.deleteOne({ _id: productId, userId: req.user._id })
-                .then(() => {
-                    res.redirect('/')
-                })
-                .catch(err => console.log(err))
+
         })
+        .then(() => {
+            console.log('Delete Complate!')
+            res.status(200).json({ message: "Delete Complete!" })
+        })
+
         .catch(err => {
             console.log(err)
+            res.status(500).json({ message: "Delete Fail!!!" })
         })
 
 }

@@ -29,7 +29,7 @@ router.post('/update-product/:productId',
 
     ], isAuth, adminController.postUpdateProduct)
 
-router.post('/delete-product/:productId', isAuth, adminController.postDeleteProduct)
+router.delete('/delete-product/:productId', isAuth, adminController.postDeleteProduct)
 
 
 
